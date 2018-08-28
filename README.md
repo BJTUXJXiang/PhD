@@ -8,6 +8,9 @@ Thèse soutenue le 4 décembre 2017
 Université de Bordeaux -- LaBRI -- Équipe Rhoban  
 2013-2017  
 
+- [Manuscript de thèse (PDF)](/build/TheseMinimized.pdf)
+- [Support de présentation de la soutenance (PDF)](/build/SoutenanceMinimized.pdf)
+
 Directeurs de thèse :
 ---------------------
 
