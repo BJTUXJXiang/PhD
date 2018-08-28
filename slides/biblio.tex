@@ -1,0 +1,66 @@
+
+\subsection{Littérature et état de l'art}
+
+\begin{frame}{État de l'art (1/2) -- Apprentissage de l'odométrie}
+    \footnotesize
+    Littérature :
+    \vspace{0.5em}
+    \newline
+    \begin{tabular}{|p{1.5cm}|l|p{1.7cm}|p{1.2cm}|p{1.8cm}|p{1.6cm}|}
+        \hline
+        Article & Robot & Mesure & Capteur & Apprentissage & Particularité \\
+        \hline
+        \customtextcolor{(Borenstein et al., 1996)} 
+            & roues & trajectoires références & manuel & analytique & Benchmark \\
+        \hline
+        \customtextcolor{(Roy et al., 1999)} 
+            & roues & déplacements égocentriques & laser proprioceptif & maximisation vraisemblance & \\
+        \hline
+        \customtextcolor{(Martínez et al., 2005)}
+            & roues & pose finale & manuel & optimisation boite noire & chenilles \\
+        \hline
+        \customtextcolor{(Antonelli et al., 2005)}
+            & roues & pose finale & externe & régression linéaire & linéarisation \\
+        \hline
+        \customtextcolor{(Schmitz et al., 2010)} 
+            & humanoïde & déplacements égocentriques & externe & régression linéaire & uniquement prédiction \\
+        \hline
+    \end{tabular}
+    \vspace{0.5em}
+    \newline
+    Contributions :
+    \vspace{0.5em}
+    \newline
+    \begin{tabular}{|p{1.5cm}|l|p{1.7cm}|p{1.2cm}|p{1.8cm}|p{1.6cm}|}
+        \hline
+        \customtextcolor{(Rouxel et al., 2016)} 
+            & humanoïde & déplacements égocentriques & externe & régression non paramétrique & proprioceptif + prédictif \\
+        \hline
+        \customtextcolor{(Hofer et al., 2017)} 
+            & humanoïde & pose finale & manuel & optimisation boite noire & proprioceptif + prédictif \\
+        \hline
+    \end{tabular}
+\end{frame}
+
+\begin{frame}{État de l'art (2/2) -- Odométrie visuelle}
+    \begin{block}{Odométrie visuelle}
+        \begin{itemize}
+            \item Traitement d'images
+            \item Variation de la pose de la caméra entre deux images
+            \item Dans le repère du monde
+            \item Pas de proprioception
+        \end{itemize}
+    \end{block}
+    \customtextcolor{Avantage :}\\
+    ~~~prend en compte les glissements\\
+    \customtextcolor{Principales difficultés :}\\
+    ~~~puissance de calcul, chocs et mouvements saccadés $\Rightarrow$ flou et bruit\\
+    \vspace{1.0em}
+    \begin{description}
+        \item[Stasse et al. (2006)] : 
+            robot humanoïde HRP-2 + déplacement désiré + Kalman
+        \item[Oriolo et al. (2016)] : 
+            robot NAO + odométrie prorioceptive + capteur FSR + Kalman (mais calcul déporté)
+    \end{description}
+\end{frame}
+

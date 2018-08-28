@@ -1,0 +1,294 @@
+
+\section{Liste des publications et autres travaux\label{sec:publications_and_works}}
+
+Cette section résume rapidement les différentes publications
+auxquelles j'ai participé au cours de cette thèse 
+ainsi que d'autres travaux qui me semble intéressant de mentionner.
+Beaucoup des points suivants ne sont pas détaillés dans ce manuscrit
+mais permettent d'apprécier le contexte et la démarche ayant guidés 
+les expérimentations présentées ici.
+
+\subsection{Publications}
+
+\begin{itemize}
+    \item \footnotesize\bibentry{ForceSencorsHumanoidsVideo2015}\normalsize\leavevmode\\\\
+        Cette contribution vidéo présente succinctement les capteurs de pression 
+        à base de jauges de contraintes ainsi que la méthode de stabilisation
+        de la marche (voir section \ref{sec:walk_stabilization}) tous deux conçus 
+        par Grégoire Passault.
+        La vidéo fait également état de l'amélioration de la précision de 
+        l'odométrie proprioceptive en utilisant les capteurs de pression pour
+        l'estimation du pied de support (voir section \ref{sec:odometry_pressure}).\\
+    \item \footnotesize\bibentry{ProjectsWorkshopHumanoids2015}\normalsize\leavevmode\\\\
+        Cet article livre à l'occasion d'un workshop trois projets libres et ouverts à la communauté RoboCup.
+        Le premier détail plus avant le fonctionnement des capteurs de pression de Grégoire Passault
+        et livre sa conception mécanique, électronique et logicielle (\url{https://github.com/Rhoban/ForceFoot}).
+        Le deuxième présente la bibliothèque logicielle \textit{RhIO} (\url{https://github.com/Rhoban/RhIO})
+        développée et utilisée à la fois comme système de paramétrage, de monitorage et 
+        d'interface utilisateur pour les différents modules du robot.
+        L'interface en ligne de commande de type \og \textit{shell} \fg est développée
+        par Grégoire Passault et Steve N'Guyen.
+        Cette bibliothèque est employée sur tous les robots de l'équipe depuis 2015.
+        Le troisième projet propose à la communauté l'implémentation du générateur de marche 
+        \textit{IKWalk} (\url{https://github.com/Rhoban/IKWalk}) décrit à la section \ref{sec:walk}.
+        Ce générateur de marche est utilisé sur nos robots humanoïdes de l'année 2014 à 2016 incluse.
+        À noter que ces trois projets après de multiples contacts avec la communauté 
+        ont commencé à être employés par d'autres équipes en 2017.
+        Une vidéo illustrant le fonctionnement de \textit{RhIO} est visible à l'adresse :
+        \url{https://youtu.be/MOizgXYENLc}\\
+    \item \footnotesize\bibentry{OdometryICRA2016}\normalsize\leavevmode\\\\
+        Les odométries proprioceptive et prédictive sur le robot humanoïde Sigmaban 
+        sont corrigées par la méthode de régression non paramétrique LWPR.
+        Les données sont acquises par un système externe de capture de mouvement.
+        Deux surfaces de marche et deux mouvements de marche sont comparés.
+        Le contenu de cet article est approfondi dans la section \ref{sec:odometry_lwpr}.
+        Une vidéo présentant le dispositif expérimental et ses résultats est disponible
+        à l'adresse : \url{https://youtu.be/9HT33KMtfLw}.\\
+    \item \footnotesize\bibentry{DynabanRoboCup2016}\normalsize\leavevmode\\\\
+        Exposé lors du symposium annuel de la RoboCup, cet article présente la
+        ré-implémentation ouverte et libre du firmware à bord des 
+        servomoteurs Dynamixel MX (\url{https://github.com/RhobanProject/Dynaban}) 
+        réalisé par Rémi Fabre.
+        En plus des fonctionnalités initiales du servomoteur, 
+        un contrôle en couple par commande anticipée
+        (\textit{feedforward}) directement embarqué en interne
+        est expérimenté afin de réduire les 
+        erreurs de suivi de trajectoire dans les jambes du robot Sigmaban.
+        Les tests sont effectués sur un mouvement de tir en simple support très dynamique
+        et généré hors ligne par optimisation en boite noire 
+        (minimisation de la somme des couples, voir section \ref{sec:motion_generation}).
+        Le modèle dynamique inverse du robot est utilisé pour le calcul des couples
+        nécessaires à l'exécution du mouvement. 
+        Les trajectoires de positions et de couples sont ensuite approximées par des
+        splines cubiques puis transmises à chaque servomoteur.
+        Les précisions ainsi que les retards de suivi par rapport à la consigne, induits par 
+        le contrôle proportionnel avec et sans pré compensation sont comparés.\\
+    \item \footnotesize\bibentry{ChampionPaperRoboCup2016}\normalsize\leavevmode\\\\
+        Cet article écrit en commun avec l'équipe Rhoban fait suite à la victoire de
+        l'équipe à la compétition RoboCup 2016 dans la catégorie des petits robots humanoïdes
+        jouant au football.
+        Différentes particularités techniques liées au succès de l'équipe sont décrites et 
+        partagées avec la communauté.
+        Sont évoqués, les capteurs de pression sous les pieds, la méthode de stabilisation 
+        de la marche et l'architecture mécanique et électronique du robot, le choix spécifique de
+        la lentille et de la caméra du robot, l'architecture du module de traitement d'image 
+        et de vision, le fonctionnement du module de localisation à l'aide d'un filtre à particule, 
+        nos outils de monitorage et de contrôle logiciel (RhIO), l'utilisation des différents 
+        modèles géométriques prédictifs et proprioceptifs internes du robot 
+        et le calcul de l'odométrie, 
+        le comportement du jeu d'équipe des robots.\\
+    \item \footnotesize\bibentry{ApproachICAPS2017}\normalsize\leavevmode\\\\
+        Pour réduire la complexité opérationnelle posée par le système de capture de mouvement,
+        une méthode de calibration de l'odométrie proprioceptive et prédictive est proposée
+        ne nécessitant pas de capteur externe. Un modèle de correction linéaire est appris
+        sur le robot Sigmaban au travers d'une optimisation en boite noire par l'algorithme CMA-ES.
+        Cette méthode est appliquée avec succès lors de l'édition 2016 de la compétition RoboCup.
+        De plus, Ludovic Hofer met en oeuvre et évalue une technique de planification de pas
+        basée sur la résolution d'un problème MDP (\textit{Markovian Decision Process}) continue.
+        Cette planification permet d'améliorer le temps de déplacement du robot pour se 
+        placer devant une balle en position de tir.
+        Ces travaux sont détaillés à la section \ref{sec:odometry_cmaes}.
+        Une vidéo comparant les différents mouvements d'approche de la balle 
+        est disponible à l'adresse : \url{https://youtu.be/PNA-rpNKfsY}.\\
+\end{itemize}
+
+\subsection{Autres travaux\label{sec:other_works}}
+
+\begin{itemize}
+    \item \textbf{Simulateur planaire Euler-Lagrange : }
+        Développement d'un petit simulateur dynamique 2d en C++ 
+        se basant sur le formalise de Euler-Lagrange.
+        Les équations de la dynamique sont calculées de manière symbolique
+        afin de le rendre la modélisation de la chaine cinématique générique.
+        Les sources non documentées peuvent être trouvées à l'adresse
+        \url{https://github.com/RhobanProject/SimLagrange}.
+        Ce simulateur a été employé par Steve N'Guyen pour une étude
+        des points fixes de la dynamique de plusieurs marcheurs passifs.\\
+    \item \textbf{Expérimentation de la stabilité sur tapis roulant et optimisation sans modèle : }
+        Le robot Sigmaban est asservit grâce à un système externe de capture
+        de mouvement afin de marcher tout droit sur un tapis roulant pendant 
+        de longues périodes.
+        Un sous ensemble des paramètres de la marche est exploré localement 
+        autour de la configuration initiale.
+        Durant ses séquences, la pose du robot sur le tapis roulant ainsi que
+        l'ensemble de ses capteurs sont enregistrés.
+        Pour chaque jeu de paramètres, le comportement du robot 
+        sur de nombreux pas est capturé.
+        L'objectif étant d'une part, de construire un critère de stabilité de 
+        la marche basé sur l'effort d'asservissement ainsi que les 
+        mesures des gyromètres\footnote{Une estimation de la stabilité par le calcul 
+        de l'application de Poincaré entre deux cycles de marche a également été envisagée. 
+        Malheureusement, le bruit entachant les mesures n'a pas permit d'obtenir 
+        de résultat significatif.}.
+        D'autre part, une descente de gradient est menée dans le but final d'améliorer 
+        la stabilité de la marche.
+        Le gradient est calculé par un algorithme de différences finies 
+        et de régression linéaire.
+        L'objectif final de ces travaux était en réalité l'expérimentation
+        des méthodes d'apprentissage par renforcement sans modèle (\textit{model-free})
+        développées par \cite{peters_reinforcement_2008}, \cite{kober_policy_2009}.
+
+        Il s'est avéré que le critère de stabilité était soumis à un bruit très important dû 
+        à la fois aux nombreuses instabilités du robot ainsi qu'au processus
+        d'asservissement lui même.
+        Il n'a pas été possible de dégager des données un gradient significatif
+        permettant une optimisation de la stabilité.
+        De plus, une exploration trop forte des paramètres de la marche rendait le
+        robot impossible à asservir sur le tapis roulant et entrainant rapidement sa chute.
+        Il est également possible qu'au vu du bruit, les paramètres initiaux 
+        de marche étaient déjà quasiment optimaux pour ce générateur.
+        Par la suite, le choix a été fait de se tourner vers les méthodes 
+        d'apprentissage avec modèle (\textit{model-based}), permettant 
+        en théorie une meilleure utilisation des données expérimentales.
+
+        À noter que cette expérimentation à eut lieu en 2014. 
+        Étant donné que la mécanique, l'électronique et le logiciel
+        (par exemple la marche\footnote{Le mouvement de marche utilisé en 2014 était basé 
+        sur le générateur \textit{CartWalk}. Partageant les mêmes principes que 
+        la marche \textit{IKWalk}, ce générateur était qualitativement moins stable 
+        et moins paramétrable.}) ont depuis beaucoup évolué, il pourrait être intéressant 
+        de retenter cette étude.
+        Une vidéo du dispositif expérimental est disponible à l'adresse : 
+        \url{https://youtu.be/xxazn_JJaWs}\\.
+    \item \textbf{Bibliothèque de communication bas niveau \textit{RhAL} : }
+        La bibliothèque \textit{RhAL} a été développée afin d'homogénéiser et
+        de mieux synchroniser la communication entre le programme principal contrôlant 
+        les robots (\textit{RhobanServer}) et les différents composants matériels :
+        servomoteurs, centrale inertielle, capteurs de pression et boutons de contrôle.
+        La communication est asynchrone. Dans un thread dédié, RhAL lit puis écrit
+        les données sur le bus de communication, se synchronise avec le 
+        thread de mouvement puis recommence. 
+        Au sein du programme principal, les mouvements sont ainsi calculés dans un
+        thread cadencé à la même fréquence que les communications bas niveau, 
+        soit environs $100$~Hz.
+        Les sources de la bibliothèque sont librement disponibles à l'adresse :
+        \url{https://github.com/Rhoban/RhAL}.\\
+    \item \textbf{Calibration du modèle de caméra : }
+        Un autre sujet essentiel au succès de l'équipe dans la compétition RoboCup 
+        concerne le lien entre la caméra et le modèle géométrique direct du robot.
+        Une fois la balle ou la base des poteaux de but repérées dans l'image
+        fournie par la caméra, il faut en estimer sa position cartésienne 
+        relativement au robot.
+        Positionner les objets détectés dans le monde est indispensable 
+        à la localisation du robot sur le terrain.
+        Sachant que ces objets sont posés sur le sol, connaissant les ouvertures
+        angulaires et la pose de la caméra grâce au modèle, des calculs géométriques 
+        simples estiment la position de l'objet par rapport au robot.
+        Mais à cause des nombreuses imperfections mécaniques, cette estimation
+        est souvent entachée pour un objet situé à un mètre de l'ordre d'une dizaine
+        de centimètres d'erreur.
+        
+        Au travers de plusieurs compensations angulaires, le modèle géométrique direct
+        est corrigé afin de ramener cette précision à un niveau plus acceptable : 
+        de l'ordre d'un centimètre d'erreur à un mètre de distance.
+        Plus précisément, les paramètres de correction sont des constantes angulaires
+        rajoutées au niveau des transformations entre deux solides de l'arbre mécanique.
+        Les données expérimentales sont enregistrées en manipulant manuellement
+        la caméra du robot (les moteurs du cou étant relâchés).
+        A chaque fois, un pixel précis de l'image est aligné avec un point sur
+        le sol à distance connue. De plus, différentes postures du buste du robot
+        sont explorées afin de lever certaines redondances des corrections géométriques.
+        Ces paramètres de correction sont identifiés par une technique
+        de maximisation de la log-vraisemblance.
+        Cette méthode statistique permet de prendre explicitement en compte 
+        le bruit de mesure dans des données d'apprentissage.
+        L'optimisation est laissé à l'algorithme CMA-ES.\\
+    \item \textbf{Génération de mouvements de tir par optimisation de la dynamique inverse : }
+        Au vu de la difficulté et du temps nécessaire au réglage manuel de
+        mouvements stables sur les robots, la piste d'une génération 
+        automatique a été explorée à la section \ref{sec:motion_generation}.
+        Ces travaux se concentrent en particulier sur la synthèse de
+        mouvements de tir en boucle ouverte par optimisation.
+
+        Au final, seuls des mouvements de tir en simple support et 
+        de transition double support vers simple support se sont révélés
+        stables sur le robot physique.
+        Il n'a pas été possible d'atteindre la puissance du tir
+        expert (en double support) tout en conservant la stabilité.
+        Ceci en raison de la forte divergence entre le comportement idéal 
+        et le comportement réel du robot.\\
+    \item \textbf{Implémentation d'un simulateur physique pour Sigmaban : }
+        Le but du simulateur est d'utiliser le modèle dynamique direct du
+        robot pour prédire son comportement au cours du temps à partir des
+        ordres envoyés aux servomoteurs.
+        Les concepts sur lesquels se fonde l'implémentation du simulateur
+        sont présentés à la section \ref{sec:model_dynamics}.
+        Ces travaux ne sont pas encore aboutis et de nombreuses expérimentations
+        restent nécessaires pour valider le simulateur ainsi que la méthode
+        d'identification de ses paramètres utilisée.
+        Les premiers résultats sont listés à la section \ref{sec:motion_results}.\\
+    \item \textbf{Calibration du modèle de bruit de l'odométrie : }
+        À l'occasion de l'édition 2017 du \textit{German Open} (une compétition
+        locale organisée par la communauté RoboCup), 
+        l'amélioration de l'apprentissage du modèle correctif de l'odométrie 
+        (présenté section \ref{sec:odometry_cmaes}) a été commencé.
+        La technique de maximisation de la log-vraisemblance est appliquée
+        pour d'une part, 
+        pour prendre en compte les sources de bruit affectant les observations expérimentales, 
+        et d'autre part pour estimer un modèle de bruit du déplacement 
+        proportionnel aux ordres envoyés à la marche.
+
+        Pour chaque observation, l'évaluation de la prédiction 
+        est répétée plusieurs fois en simulant les sources de bruit expérimentales.
+        Ensuite, la distribution des prédictions possibles
+        est interpolée par une gaussienne multivariée.
+        Le critère statistique de la vraisemblance entre cette distribution 
+        et les observations expérimentales est calculé.
+        C'est ce critère qui est alors optimisé par CMA-ES.
+        Ceci afin de rechercher les paramètres du modèle de correction, 
+        du bruit de déplacement, ainsi que du bruit venant de l'expérimentation
+        expliquant aux mieux les données.\\
+    \item \textbf{Générateur de marche \textit{QuinticWalk} : }
+        La section \ref{sec:walk_limitations} fait état des multiples limitations
+        du générateur de marche \textit{IKWalk}.
+        Pour l'édition 2017 de la compétition RoboCup, un nouveau générateur de marche
+        en boucle ouverte \textit{QuinticWalk} a été développé afin de répondre
+        à certaines de ses limites. Ses sources sont disponibles à l'adresse 
+        \url{https://github.com/RhobanProject/Model/tree/master/QuinticWalk}.
+
+        Le principe général du mouvement reste celui de la \textit{IKWalk} :
+        boucle ouverte et mouvements dans l'espace cartésien géométriquement paramétrés. 
+        Mais de multiples détails ont été modifiés.
+        L'utilisation de splines de degré $5$ assure une continuité des accélérations 
+        et donc des couples au cours du mouvement.
+        Le calcul de la trajectoire du ZMP théorique (qui est continue) 
+        est tracée sur la figure \ref{fig:walk_quintic_zmp}.
+        En exprimant toutes les positions cartésiennes dans le repère du pied de support, 
+        fixe par rapport au monde, la planification de la position des pas est rendu plus aisée.
+        Cependant, cela entraine une discontinuité des splines au moment du changement 
+        de pied de support qu'il est nécessaire de traiter.
+        La continuité des positions cartésiennes cibles est assurée même en cas 
+        de mise à jour des paramètres du mouvement au milieu d'un cycle de marche.
+        La marche en phase de double support est implémentée et permet aux robots 
+        de se déplacer lentement à basse fréquence (moins de un Hertz).
+        
+        Qualitativement, le mouvement de marche est bien plus stable, en particulier
+        sur nos robot de plus grande taille. 
+        La nécessité du processus de stabilisation utilisant les capteurs de pression
+        pour la robustesse des pas chassés est réduite.
+        Il serait très intéressant d'étudier l'effet de ce changement de générateur 
+        de marche sur le bruit des déplacements et la précision de l'odométrie comme 
+        discuté à la section \ref{sec:odometry_lwpr}.
+        La principale évolution suivante de ce générateur de marche serait
+        de remplacer les polynômes quintiques par des trajectoires 
+        générée au niveau du jerk, proposées par 
+        \cite{broquere2008soft}, \cite{broquere2011planification}.\\
+\end{itemize}
+
+Pour donner un ordre de grandeur des développements logiciels réalisés
+au cours de cette thèse, les chiffres suivants peuvent être mentionnés.
+Sans tenir compte des implémentations propre au programme principal 
+de contrôle des robots, \textit{RhobanServer}\footnote{Collectivement, le développement 
+de \textit{RhobanServeur} (et ses dépendances) par l'équipe 
+dépasse aujourd'hui les \textbf{100000} lignes C++.},
+j'ai personnellement écrit les nombres de lignes de code C++ suivants :
+\begin{itemize}
+    \item Bibliothèque \textit{RhIO} : \textbf{9276}
+    \item Bibliothèque \textit{RhAL} : \textbf{6380}
+    \item Simulateur symbolique avec le formaliste d'Euler-Lagrange : \textbf{8506}
+    \item Reste de l'implémentation personnelle, 
+        comprenant entre autres de nombreux tests et expérimentations, 
+        la modélisation géométrique et dynamique des robots, 
+        la simulation, les calculs odométriques et apprentissage, etc. : \textbf{64697}
+\end{itemize}
+

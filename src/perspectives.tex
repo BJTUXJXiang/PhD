@@ -1,0 +1,331 @@
+
+\section{Perspectives\label{sec:perspectives}}
+
+\subsection{Imperfections des robots}
+
+Dans la mesure du possible, il est très largement préférable 
+de tenter de résoudre directement les imperfections matériels des robots
+plutôt que de les compenser par des techniques logiciels.
+Dans le cas de nos petits robots humanoïdes, plusieurs 
+pistes peuvent être explorées :\\
+
+Pour commencer, l'équipe a commencé à expérimenter en 2017 la fabrication
+de certains des segments mécaniques des robots en fibres de carbone.
+Ce matériau réunit de nombreux avantages.
+Plus léger que l'aluminium, il est solide et ne se déforme pas avec le temps.
+Par contre, il est cassant, ne peut donc pas être plié et son prix est plus élevé.
+Malheureusement, les segments mécaniques ne sont pas les seuls à se déformer
+(voir section \ref{sec:robot_flaws}).
+Les arbres de sortie des servomoteurs tendent également à se tordre en torsion.
+Pour eux, il n'y a pas réellement de solution envisageable, puisque qu'ils 
+sont intimement liés aux servomoteurs Dynamixel.
+
+Ces déformations mécaniques ont principalement lieu
+pendant les matchs de football robotique,
+lors des chutes et des chocs violents contre les autres robots,
+alliés ou adverses.
+Étant donné que sans perturbation extérieur, 
+la stabilité de notre mouvement de marche est satisfaisante, 
+une solution plus pérenne serait donc de limiter autant 
+que possible les collisions avec les autres robots.
+Une ébauche d'algorithme de détection et d'évitement d'obstacle
+a été expérimenté par l'équipe lors de l'édition 2017 de la RoboCup.
+De la même manière que cette fonctionnalité est imposée dans la ligne des
+robots humanoïdes standard NAO, cette approche est certainement 
+à développer pour sauvegarder la mécanique des robots.\\
+
+Concernant les jeux mécaniques des servomoteurs, il reste à identifier
+précisément leur origine en comparant précisément 
+un moteurs neuf à un moteur usé.
+Si le problème provient bien de l'usure des dents des engrenages, 
+il n'y aura pas d'autre solution envisageable que de les remplacer 
+à intervalles réguliers.
+Si par contre, le support plastique des axes de rotations des
+engrenages tend à se déformer, un boitier métallique réduirait
+alors la vitesse d'usure.\\
+
+Afin de réduire la résistance électrique présent sur le bus
+d'alimentation série, il a été proposé de
+directement souder les câbles du bus sur la carte électronique du servomoteur.
+Cette approche possède malheureusement comme principal inconvénient 
+d'augmenter l'effort humain de fabrication mais surtout de remplacement
+des câbles\footnote{L'usure et les faux contacts électriques à l'intérieur
+des câbles Dynamixel sont malheureusement assez courant. 
+Leur remplacement est alors indispensable.}.
+L'échange des connecteurs Dynamixel par d'autre connecteurs, 
+plus robustes mais plus volumineux est également un compromis à tester.\\
+
+Enfin, l'amélioration du suivi de trajectoire des servomoteurs
+passe par l'ajout d'un contrôle plus riche en pré-compensation (\textit{feedforward}).
+Soit directement au sein des servomoteurs comme expérimenté par Rémi Fabre
+avec Dynaban (\cite{DynabanRoboCup2016}).
+Soit de l'extérieur en biaisant volontairement la consigne de position ;
+étudié récemment par Philipp Schlehuber.
+La correction se base à la fois sur le modèle dynamique inverse du robot
+mais également sur le modèle électrique des moteurs.
+Ces modèles doivent donc être préalablement identifiés.
+
+Il faut également noter que les toutes dernières versions du logiciel
+de contrôle interne des servomoteurs Dynamixel ajoutent à leur tour une fonctionnalité
+de pré-compensation.
+Moins \og configurable \fg que l'utilisation de Dynaban, cette mise à jour
+a l'avantage d'être dès aujourd'hui compatible avec les différents modèles
+de servomoteurs\footnote{Nouvelle documentation 
+\textit{MX-64} : 
+\url{http://support.robotis.com/en/product/actuator/dynamixel/mx_series/mx-64(2.0).htm} 
+et \textit{MX-106} : 
+\url{http://support.robotis.com/en/product/actuator/dynamixel/mx_series/mx-106(2.0).htm}}.
+Le support de ces nouvelles fonctionnalités reste à implémenter au sein de notre
+structure logicielle.
+L'utilisation de la pré-compensation dans tous les mouvements du robot 
+va également nécessiter une modification de notre couche motrice.
+En effet, pour compenser les délais, le mouvement désiré de chaque articulation
+devra pouvoir être calculé légèrement dans le futur.
+
+\subsection{Correction de l'odométrie}
+
+Les effets des imperfections de nos petits robots humanoïdes
+sur les odométries proprioceptive et prédictive
+ont été étudiés et en partie corrigés aux sections 
+\ref{sec:odometry_lwpr} et \ref{sec:odometry_cmaes}.
+Au vu des résultats, les perspectives suivantes sont à envisager :\\
+
+Tout d'abord dans la deuxième étude, il serait important de compléter 
+l'analyse des performances des politiques de contrôle du mouvement de marche.
+Ces politiques, soit représentées sous la forme d'une forêt d'arbres de régression,
+soit manuellement implémentées et paramétrées, sont optimisées à partir 
+de la simulation des déplacement du robot.
+Malheureusement, les travaux proposés ne permettent pas de savoir si
+la correction de l'odométrie prédictive est réellement importante
+pour la qualité des politiques générées.
+Est-ce que la prise en compte par la simulation du comportement réel du robot
+améliore la pré-compensation des imperfections, 
+ou est-ce que l'asservissement suffit à obtenir un contrôle robuste et précis ?\\
+
+Ensuite, les résultats obtenus par \cite{oriolo_humanoid_2016} nous incitent
+à expérimenter sur nos robots les bibliothèques disponibles d'odométrie visuelle.
+Ceci afin de réellement tester leur temps de calcul en embarqué et également
+d'appréhender leurs limitations quant à l'environnement visuelle.
+La combinaison des deux méthodes, la correction de l'odométrie proprioceptive
+par apprentissage et l'estimation de odométrie par analyse visuelle, 
+pourrait alors être étudiée.
+Le principal avantage de l'odométrie visuelle étant la mesure possible 
+des glissements des pieds du robots ; mesure impossible à partir 
+des capteurs proprioceptif disponible sur Sigmaban.\\
+
+L'algorithme de maximisation de la (log) vraisemblance peut être
+appliqué afin de raffiner l'apprentissage du modèle de correction 
+linéaire des odométries proprioceptive et prédictive.
+Dans la section \ref{sec:odometry_cmaes}, les paramètres du modèle de correction
+sont optimisés afin de minimiser directement la distance entre le déplacement 
+estimé au travers du modèle et le déplacement expérimentalement mesuré.
+Cette optimisation ne prend pas en compte, ni les différentes sources
+de bruit expérimental, ni le fait que les déplacements de plus
+longue distance cartésienne sont alors surpondérés.
+La vraisemblance est utilisée comme critère à maximiser dans 
+la recherche des paramètres du modèle de correction.
+Elle évalue la pertinence statistique des paramètres
+d'un modèle au regard des données expérimentales.
+Ce critère tend à réduire les cas de surapprentissage et
+permet de plus d'identifier un modèle (également linéaire) du bruit
+du déplacement (dépendant des ordres de la marche).
+
+L'implémentation de cette méthode a été commencée
+à l'occasion de l'édition 2017 du \textit{German Open} RoboCup.
+Bien que qualitativement fonctionnelle, une étude statistique 
+précise n'a pas encore été menée.
+De plus pour des raisons pratiques, les séquences d'apprentissage ont été enregistrées 
+en pilotant le robot manuellement et non pas de façon automatique et aléatoire.
+Enfin, ni l'odométrie prédictive, ni les valeurs du modèle de bruit
+non pour l'instant été analysés en détail.
+À terme, l'objectif est de fournir une évaluation plus juste du bruit 
+de déplacement aux méthodes de génération de politiques de contrôle
+du mouvement de marche\footnote{Sous l'hypothèse que le modèle 
+du déplacement prédictif du robot permet bien d'améliorer la performance 
+des politiques générées en simulation.}.\\
+
+Une autre extension possible de ces travaux est
+l'amélioration du temps et de la simplicité d'enregistrement
+des séquences de déplacements nécessaires à l'apprentissage.
+L'équipe a par exemple débuté le développement
+d'un système de localisation aisément transportable.
+Son fonctionnement repose sur la détection par 
+le robot de balises visuelles (QR code) disposées tout autour de 
+la zone de marche sur des support léger en bois.
+Même si la précision d'un tel système reste à évaluer,
+la mise au point d'une procédure d'enregistrement intégralement 
+automatisée semble réalisable.
+À noter qu'avec ce système, la calibration du modèle de caméra
+du robot serait aussi simultanément possible.\\
+
+L'intégralité des expérimentations sur l'odométrie
+réalisées ici sont basées sur le générateur de marche \textit{IKWalk}
+utilisé par l'équipe de 2014 à 2016 (voir la section \ref{sec:walk}).
+Le nouveau mouvement de marche \textit{QuinticWalk} n'a été développé que récemment.
+Qualitativement, ce mouvement semble être bien plus stable, 
+moins sujets aux oscillations parasites.
+Il serait très intéressant d'appliquer l'apprentissage des odométries
+prédictive et proprioceptive sur cette nouvelle marche puis de comparer
+les paramètres de leur modèle de bruit respectif.
+On peut faire l'hypothèse que la stabilité qualitative de la marche
+\textit{QuinticWalk} sera visible au travers du bruit réduit de son déplacement.
+
+Sur les petits robots quadrupèdes AIBO, les travaux de
+\cite{rofer_evolutionary_2004} peuvent ici être soulignés.
+Dans cet article, l'auteur optimise les paramètres de son générateur
+de marche à l'aide d'un algorithme génétique sur le robot réel.
+L'originalité de la démarche provient du fait que 
+sa fonction de récompense prend en compte l'erreur entre
+le déplacement désiré et le mouvement proprioceptif perçus.
+Le mouvement de marche est ainsi optimiser de sorte à
+réduire l'erreur de l'odométrie proprioceptive.
+L'idée de l'étude du mouvement de marche au travers de 
+la précision de son odométrie est intéressante et 
+pourrait être appliquée à nos robots humanoïdes.
+
+\subsection{Simulation et synthèse de mouvements}
+
+À l'heure actuelle, une partie des implémentations logicielles sont achevées ;
+synthèse de mouvement par optimisation et dynamique inverse, 
+simulation (dynamique directe) du robot avec contact sans glissement,
+ré-optimisation des mouvements avec le simulateur.
+Néanmoins, il reste encore beaucoup à faire.
+Notamment améliorer la qualité du simulateur et réaliser 
+de nombreuses expérimentations afin de valider nos prédictions
+sur des systèmes mécaniques de complexité croissantes.\\
+
+La génération de mouvements \og optimaux \fg, par optimisation
+d'un critère de performance basé sur la dynamique inverse 
+du robot est un domaine déjà très étudié.
+Dans la littérature, le modèle dynamique inverse ainsi que
+le critère de performance sont différentiés.
+Le calcul du gradient permet alors une recherche efficace 
+des optimums locaux.
+Dans l'état actuelle de notre implémentation, cette optimisation
+repose sur une approche sans gradient (boite noire).
+En terme de temps de calcul, cette méthode est bien moins 
+efficace de plusieurs ordres de grandeurs.
+Le point délicat à traiter est principalement la différentiation 
+de la dynamique inverse dans le cas du double support.
+Ceci à cause du fait que le problème admet une infinité de solutions.
+Ce problème est par exemple résolu par \cite{lengagne_planification_2009}
+ayant généré des mouvements sur le petit robot humanoïde HOAP-3.\\
+
+L'amélioration du simulateur passe aussi par la gestion du glissement
+des points de contact du robot avec le sol.
+Typiquement avec l'implémentation de la méthode classique de 
+\cite{anitescu_formulating_1997} et \cite{stewart_implicit_1996}
+et l'utilisation de la dynamique impulsive.
+Par exemple pendant le tir, il est possible que le léger glissement 
+du pied de support au moment de l'accélération maximale 
+du pied en vol joue un rôle significatif dans la stabilité du tir expert.\\
+
+Enfin, l'identification des paramètres du simulateur 
+est l'une des principales difficultés de la méthode.
+Pour le moment, une approche simple par optimisation est utilisée ;
+très semblable à ce qui a été fait pour l'odométrie.
+Cependant, les temps de calculs sont ici très élevés et rendent 
+cette approche difficile à mettre en oeuvre au regard 
+du nombre important de paramètres recherchés.
+
+Heureusement, le domaine de l'identification de modèles 
+dynamiques possède une littérature très riche.
+Son étude est nécessaire à la poursuite de ces travaux.
+Sans nécessité de capteurs de force, on peut par exemple
+mentionner les travaux de \cite{schwarz_compliant_2013} identifiant
+les paramètres d'un modèle des servomoteurs par apprentissage itératif
+du contrôle (\textit{iterative learning control}).\\
+
+L'intérêt du simulateur est d'apporter autant d'a priori que possible 
+au problème. Cependant, il subsistera toujours une erreur, 
+plus ou moins grande entre le comportement réel est les prédictions dynamiques.
+L'approche suivit dans les travaux récents de \cite{hanna_grounded_2017} 
+et \cite{farchy_humanoid_2013} est particulièrement intéressante.
+Au lieu de se reposer sur une étape d'identification complexe du simulateur,
+des techniques de régressions non paramétriques (typiquement des réseaux de neurones profonds)
+sont appliquées.
+Plus précisément, les prédictions du simulateur ne sont pas \og corrigées \fg,
+mais les ordres moteurs sont modifiés afin de produire les mêmes effets 
+dans le simulateur que sur le robot réel.
+L'expérimentation de ces méthodes semble très prometteuse.
+Sachant l'évolution des imperfections de nos robots, il est très intéressant de combler 
+la dernière étape de prédiction par des techniques d'apprentissage.
+A priori, ces techniques seront d'autant plus efficaces et capables de 
+généraliser à d'autre mouvements, que le simulateur de base 
+calcul un comportement proche de la réalité.\\
+
+La littérature propose d'expérimenter un moyen simple pour
+réduire la différence entre le comportement en simulation et dans le
+monde physique. Pour éviter que l'algorithme d'optimisation ne tire parti
+des défauts d'implémentation du simulateur, l'ajout d'un bruit
+tendrait à rendre la solution trouvée robuste aux variations de la dynamique du robot. 
+En espérant que cette robustesse suffise a permettre le transfert dans le monde réel. 
+Malheureusement, on peut faire l'hypothèse que cette solution tend à préférer 
+des mouvements plus \og conservatifs \fg et donc moins performants.\\
+
+Même si cela représente un investissement en temps significatif, 
+la réimplémentation d'un simulateur dynamique permet d'avoir la maitrise complète 
+des différents modèles (dynamiques, contacts, servomoteurs) mis en oeuvre.
+De la même manière que pour la correction de l'odométrie, 
+plusieurs niveaux de complexité sont envisageables pour chacun de ces modèles
+(modélisation du frottement linéaire ou de Stribeck, jeux mécaniques, contacts avec
+ou sans glissement, prise en compte des défauts électriques, inertie interne des servomoteurs).
+Une des principales perspectives de cette implémentation tient en 
+la quantification de l'apport de chaque modèle à la qualité de prédiction 
+du comportement de nos petits robots humanoïdes.\\
+
+La connaissance de plusieurs exemples \og positifs \fg de mouvements de tir
+experts, stables et puissants, est un atout majeur pour la poursuite de ces travaux.
+La première étape étant de réussir à les simuler ; c'est à dire à ce que
+ces mouvements hautement dynamiques soit aussi bien stables expérimentalement
+que dans la simulation.
+L'analyse de leur stabilité en simulation permettrait alors peut être
+de mieux comprendre l'effet des imperfections du robot sur la dynamique.
+En effet car d'après notre modèle dynamique inverse du robot, 
+ces mouvements ne devraient en théorie pas être stables.
+À noter que la forme des mouvements de tir experts sont cependant
+très différents de la forme paramétrée (voir section \ref{sec:motion_template}) 
+du gabarit du mouvement de tir en double support utilisé lors de l'optimisation.
+Une identification des paramètres à été commencé afin de \og convertir \fg
+les mouvements experts dans la représentation utilisée à la section \ref{sec:motion_generation}.
+Ainsi, les mouvements experts pourront être utilisés pour initialiser l'optimisation
+et tenter de les améliorer automatiquement encore un peu plus.\\
+
+Un des objectifs les plus ambitieux serait à terme la synthèse 
+d'un mouvement de marche dynamique, stable sur le robot réel.
+Le mouvement de marche est en effet particulièrement difficile à 
+simuler. Comme le mouvement n'est pas épisodique mais cyclique, 
+l'accumulation des erreurs avec le temps rend très difficile
+la prédiction précise de la dynamique du robot sur le long terme.
+De plus, la bonne simulation des contacts, des chocs et certainement 
+également du glissement est un pré-requis.
+À noter que \cite{hanna_grounded_2017} ont réussi sur un robot NAO
+à améliorer significativement la stabilité et la vitesse de marche 
+en s'appuyant sur une approche similaire.\\
+
+S'il était possible de synthétiser en boucle ouverte un mouvement
+de marche ainsi qu'un mouvement de tir en double support,
+une autre étude très intéressant serait alors à mener.
+L'analyse de l'enchainement des deux mouvements permettrait
+de grandement accélérer le temps de tir.
+Par exemple, pendant le mouvement de marche, quelle est la meilleure 
+phase où déclencher le mouvement de tir. Puis générer alors 
+un mouvement de tir démarrant directement à cet état géométrique 
+et cinématique du robot.\\
+
+En plus des mouvements en boucle ouverte,
+l'étude de la génération de mouvements réactifs est également
+une piste de recherche possible.
+L'intérêt de l'approche par optimisation en boite noire sur le simulateur
+est qu'aucune forme n'est imposée sur la politique de contrôle 
+(le calcul du gradient de la commande en fonction des paramètres 
+de la politique n'est pas nécessaire).
+Par exemple, un problème intéressant et accessible est celui de la stabilisation 
+du robot humanoïde immobile en simple support (debout sur un pied).
+Face à une perturbation extérieure et ne pouvant plus exercer de couples 
+sur le sol à cause du roulement, l'humain tend à utiliser 
+son bassin comme masse de réaction afin de lutter contre le basculement.
+D'une part, cette configuration en simple support est simple à étudier et à simuler.
+D'autre part, ce problème est également très proche d'un des défis techniques 
+(\textit{technical challenge}) faisant actuellement parti de la compétition RoboCup.\\
+

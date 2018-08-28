@@ -1,0 +1,758 @@
+
+Les références bibliographiques données dans ce chapitre ne sont pas 
+dans la majorité des cas exhaustives, les domaines de recherche considérés 
+ici étant à la fois divers et chacun très riches.
+Souvent, les travaux cités tentent d'illustrer la multiplicité des 
+méthodes employées ainsi que l'évolution des solutions apportées aux 
+différents problèmes considérés.
+Néanmoins, l'accent est mis sur les travaux dont les techniques 
+mises en oeuvre, le contexte ou les plateformes robotiques 
+se rapprochent des expérimentations présentées dans ce manuscrit.
+
+Dans un premier temps, les travaux concernant l'odométrie proprioceptive
+et prédictive sont rapportés. Avec plus en détail, l'estimation et la correction
+de l'odométrie proprioceptive sur les robots à roues et humanoïdes, 
+les méthodes concurrentes d'odométrie visuelle
+puis les efforts de planification de déplacement en lien avec l'odométrie prédictive.
+Ensuite la littérature entourant la locomotion bipède est abordée,
+puis les principaux travaux ayant traités de la mise au point de mouvements
+de tir sur les robots humanoïdes sont mentionnés.
+
+\section{Odométrie\label{sec:biblio_odometry}}
+
+La modélisation mathématique du déplacement des robots 
+est aussi vielle que la robotique mobile.
+L'estimation de la localisation et le contrôle des robots à roues 
+sont abondamment étudiés depuis la seconde moitié du XXe siècle, \cite{muir_kinematic_1987}.
+Les modèles cinématiques classiques se classent en quatre grands types :
+\begin{itemize}
+    \item Les robots à roues différentielles. 
+        La vitesse des deux roues ou des deux groupes de roues, parallèles,
+        sont contrôlés indépendamment.
+        Dans cette catégorie se trouve également les robots 
+        à \og dérapage \fg (\textit{skid-steering}), 
+        (typiquement les robots à chenilles) se basant nécessairement sur 
+        le glissement pour changer de direction.
+    \item Les robots à roues orientables. Comme sur une voiture, deux roues reliées
+        par un essieu (non indépendantes) sont orientables par rapport au plan sagittal du robot.
+    \item Les robots omnidirectionnels.
+        A l'aide d'au moins trois roues omnidirectionnelles bien positionnées, 
+        la vitesse du robot peut prendre n'importe quelle direction sur le plan
+        du sol en translation comme en rotation.
+    \newline
+\end{itemize}
+
+Une différence fondamentale distingue les robots à roues
+des robots à pattes et humanoïdes du point de vu 
+de leur modèle cinématique.
+Les robots humanoïdes sont sous-actués relativement à leurs 
+déplacements planaires alors que les robots à roues ne le sont pas.
+Aucun degré de liberté pris séparément ne permet directement au robot humanoïde 
+de contrôler sa pose sur le sol.
+Une coordination et un enchainement complexe de mouvements est nécessaire afin
+de réellement faire marcher le robot selon un vecteur donné.
+A contrario, le contrôle en vitesse ou de la direction des roues permet de manière simple
+au robot de contrôler son déplacement\footnote{à l'exception des robots 
+à roues omnidirectionnels, dans une bien moindre mesure}.
+
+\subsection{Calibration de l'odométrie}
+
+Une des premières contribution marquante à la correction de l'odométrie 
+sur les robots à roues différentielles est proposée en 1996 
+par \cite{borenstein_measurement_1996}.
+Leur objectif est ici d'identifier les imperfections mécaniques
+du robot à roues affectant son déplacement : diamètres des deux 
+roues légèrement différents, défaut de parallélisme et montage mécanique
+des roues l'une par rapport à l'autre.
+Le modèle de déplacement mathématique est simple et sous forme linéaire.
+Les auteurs dérivent alors analytiquement les conséquences géométriques 
+sur la trajectoire de ces erreurs mécaniques.
+Un de leur principal apport est la définition d'une procédure de test 
+standard (\textit{benchmark} UMBmark) évaluant la qualité de l'odométrie 
+sur un robot à roues.
+Les trajectoires de références en formes de carrés à parcourir 
+dans les deux sens mettent en exergue les défauts du modèle.
+Puis en mesurant la trajectoire géométrique réelle du robot, les auteurs
+en déduisent directement par le calcul la valeur des paramètres du modèle
+de déplacement décrivant des défauts mécaniques.
+
+\cite{roy_online_1999} proposent dès 1999 la calibration d'un modèle 
+de déplacement utilisant la méthode de maximisation de la log-vraisemblance 
+(\textit{log-likelihood maximization}) sur les robots à roues.
+Ils s'appuient sur un capteur de distance laser monté sur le robot 
+mobile permettant au robot d'observer (dans de bonnes conditions) 
+son déplacement et ainsi de calibrer son odométrie pendant son fonctionnement 
+sans intervention humaine.
+Deux paramètres représentant la dérive proportionnelle au temps de 
+la translation et de la rotation du robot sont analytiquement optimisés 
+de sorte que l'odométrie estimée soit la plus vraisemblable sachant le 
+déplacement observé.
+Comme l'intégration en forme close de l'odométrie n'est pas mathématiquement
+praticable, les auteurs ne considèrent l'odométrie qu'entre deux mesures 
+successives du capteur laser.
+À noter cependant que l'estimation du bruit de déplacement 
+n'est pas traité ici.
+L'article annonce une réduction moyenne de l'erreur de 83\%, passant
+par exemple de $18$~m à $3.08$~m d'erreur en position après avoir parcouru
+$269$~m.
+
+Plus théorique, \cite{kelly_fast_2004} développe une méthode générique 
+statistique pour l'identification des paramètres du modèle de déplacement.
+L'auteur propose également d'estimer la covariance de ces paramètres.
+Le modèle cinématique, à priori non linéaire est linéarisé et différentié 
+numériquement au premier ordre selon chacun de ses paramètres.
+Le robot est contrôlé pour suivre un ensemble de trajectoires prédéfinies. 
+Pour limiter l'effort humain, la position et l'orientation réelle du
+robot n'est mesurée qu'une seule fois à la fin de la trajectoire. 
+Il n'y a ainsi pas besoin d'un système de mesure externe.
+
+Les robots à chenilles (différentielles) sont particulièrement 
+difficiles à contrôler. 
+Pour pouvoir tourner, les robots à chenilles se reposent nécessairement 
+sur un certain glissement avec le sol et dépendant de la surface.
+Afin de simplifier leur modèle cinématique, \cite{martinez_approximating_2005}
+mettent en œuvre un algorithme d'optimisation génétique en boite noire.
+Ils identifient les paramètres d'un modèle classique simple d'un robot à roues 
+différentielles capturant le comportement de leur robot à chenilles.
+Le mouvement du robot réel est découpé en courtes séquences et 
+ses poses initiales et finales sont mesurées par un capteur externe.
+Comme l'intégration du déplacement ne s'exprime pas de manière simple, 
+un algorithme en boite noire ne demandant pas la connaissance du gradient
+est employé.
+La distance entre le déplacement observé et l'odométrie estimé 
+selon le modèle est alors minimisée.
+Le bruit de mesure ou de déplacement n'est ici pas pris en compte.
+
+Sur de petites plateformes, \cite{antonelli_calibration_2005}
+transforment analytiquement le modèle cinématique classique des robots 
+à roues différentielles afin de rendre le problème d'identification linéaire
+en ses paramètres.
+Une matrice de quatre paramètres est utilisée pour représenter
+les trois paramètres du modèle cinématique classique sous forme linéaire.
+Sous cette forme, l'odométrie des robots peut être analytiquement intégrée 
+et la méthode des moindres carrées est alors appliquée.
+Les poses initiales et finales des robots sont capturées par un système 
+de détection visuelle de marqueurs placés au dessus des robots.
+La forte originalité de leurs travaux tient dans l'analyse théorique 
+du problème permise par leur mise sous forme simple.
+Les auteurs insistent sur le fait que les trajectoires en boucles fermées et
+les trajectoires dont les rotations se compensent induisent un mauvais 
+conditionnement de la régression linéaire.
+Une bonne trajectoire d'apprentissage ne revient donc pas à son point 
+de départ et l'orientation du robot évolue de manière monotone.
+Une trajectoire en forme de \og L \fg est ainsi préconisée.
+Les résultats expérimentaux précisent à la fois la moyenne, le maximum 
+et la variance de l'erreur en position de l'odométrie et le bruit 
+de quantification est également discuté.
+
+\cite{angelova_learning_2007}, proposent quant à eux d'utiliser une méthode
+d'apprentissage supervisée (ou régression) non paramétrique sur un robot 
+à roues de type rover d'exploration planétaire.
+Leur but est de prédire à partir d'informations visuelles le pourcentage 
+de glissement des zones à l'avant du robot, affectant fortement son odométrie.
+Les auteurs emploient l'algorithme LWPR (\textit{Locally weighted projection regression}) 
+et le compare aux réseaux de neurones avec une préférence pour LWPR.
+
+Toujours dans le but d'identifier les paramètres du modèle de déplacement
+de robots à roues différentielles, \cite{ivanjko_simple_2007} appliquent un algorithme
+d'optimisation non linéaire hors ligne.
+La méthode d'optimisation non linéaire de Gauss-Newton
+ne demande pas de fournir le gradient de la fonction de récompense à minimiser.
+L'optimisation minimise la distance entre la position cartésienne estimée par l'odométrie
+et le déplacement réel mesuré manuellement après une trajectoire du robot.
+Les auteurs comparent alors la qualité de l'apprentissage et la précision 
+obtenue de l'odométrie selon deux modèles. Le premier a seulement deux paramètres
+et le deuxième en a trois.
+Comme très peu de trajectoires d'apprentissages sont ici récoltées et utilisées, 
+il s'avère que le modèle à seulement deux paramètres s'avère plus performant.
+
+Enfin toujours sur les robots à roues, \cite{censi_simultaneous_2013} remarquent
+que de la même manière que le problème SLAM (localisation et cartographie), 
+le problème de la calibration de l'odométrie et de la calibration d'un capteur externe permettant 
+cette calibration sont étroitement liées.
+Les auteurs proposent dans cet article une méthode permettant à l'aide de la technique
+de maximisation de la log-vraisemblance de calibrer à la fois l'odométrie proprioceptive 
+ainsi que le modèle de capteurs extéroceptifs du type télémètre laser mesurant le déplacement 
+externe du robot.\\
+
+Avant l'introduction des robots humanoïdes NAO en 2008 dans 
+la ligue des plateformes standards (\textit{standard platform league}) 
+de la RoboCup, la compétition se basait sur les petits robots quadrupèdes AIBO
+(de 1999 à 2008).
+Il est important de saluer l'impact précurseur des travaux de recherche
+réalisés durant cette période.
+Une grande partie de la littérature liée
+aux robots humanoïdes jouant au football (locomotion, odométrie, 
+localisation, perception, tir, calibrations et apprentissages diverses) 
+est en réalité inspirée par des travaux analogues expérimentés 
+en premier lieu sur les plateformes AIBO\footnote{\url{http://www.sony-aibo.com/}}.
+
+Par exemple sur le thème de l'odométrie, \cite{hoffmann_exploiting_2005} mettent 
+en évidence les difficultés de l'estimation de l'odométrie proprioceptive 
+sur un robot à pattes (complexité de la topologie mécanique). 
+Notamment en raison des collisions avec les autres robots qui entrainent alors
+un glissement important.
+Un modèle linéaire du bruit du déplacement du robot est ajusté manuellement.
+De plus, la détection des collisions avec les autres robots leur permet
+de construire un critère de \og fiabilité \fg de l'odométrie.
+Cet critère est utilisé pour améliorer la localisation du robot sur le terrain 
+au travers d'un filtre particulaire.
+
+On peut également citer \cite{he_model-based_2007} qui mettent en place
+un algorithme d'optimisation génétique afin d'identifier les paramètres
+d'un modèle géométrique et physique de leurs robots AIBO.
+L'optimisation se base sur l'enregistrement d'une douzaine de séquences
+de marche où le déplacement réel sur le robot est mesuré manuellement.
+Grâce aux capteurs binaires de contact sous les pieds du robot AIBO et 
+du modèle optimisé, ils améliorent l'estimation de l'odométrie proprioceptive.
+Le bruit du déplacement n'étant pas alors considéré.
+
+\subsection{Odométrie visuelle}
+
+Devant la difficulté à réellement mesurer le déplacement
+d'un robot mobile à l'aide de capteurs uniquement \og proprioceptifs \fg
+(n'observant que des grandeurs internes au robot), 
+une autre piste de recherche a été explorée.
+L'observation de grandeurs externes a l'intérêt de pourvoir estimer 
+le déplacement relatif du robot de manière \og absolue \fg ; ou plus
+exactement de ne pas avoir à considérer la façon dont le robot interagit
+avec le sol (modèle cinématique, glissements).
+
+Par exemple, \cite{czarnetzki_odometry_2010} ont intégrés au niveau des pieds 
+d'un petit robot humanoïde NAO des capteurs optiques similaires 
+à ceux des souris optiques. 
+Ils permettent de mesurer directement le déplacement des pieds par 
+rapport au sol et d'accéder précisément au glissement du pied de support. 
+Néanmoins, la sensibilité de ces capteurs est très dépendante de leur hauteur
+par rapport au sol. Ils sont difficilement exploitables pour 
+le déplacement du pied en vol d'un humanoïde.
+
+Les capteurs lasers de types LIDAR (\textit{Light Detection And Ranging}) 
+sont très utilisés pour leur précision et leur relative simplicité d'analyse. 
+Typiquement, \cite{hornung_humanoid_2010} utilisent un LIDAR monté 
+sur la tête d'un robot humanoïde NAO afin d'estimer son odométrie ainsi que
+sa localisation absolue dans un environnement 3D connu.
+
+Malheureusement, ces instruments sont mécaniquement fragiles.
+La moindre chute du robot NAO peut gravement endommager les parties 
+mobiles du LIDAR monté sur sa tête.
+De plus, bien qu'en constante baisse depuis leur production en masse dans
+les robots aspirateurs, leurs prix restent élevés en comparaison
+du coût des petits robots humanoïdes.
+
+Les LIDAR sont surtout très employés sur les robots mobiles à roues par
+la communauté SLAM (\textit{simultaneous localization and mapping}).
+Ce domaine de recherche s'intéresse au problème de localisation et
+cartographie simultanée. 
+Le but étant à la fois, de construire une carte d'un environnement 
+inconnu et de s'y positionner le plus précisément possible afin de
+pouvoir y naviguer.
+Ce pan de la recherche à l'intersection de la robotique et 
+du traitement d'image et du signal est très riche, très actif et 
+en constante progression depuis plus de vingt ans 
+(résumé par \cite{fuentes-pacheco_visual_2015}).
+
+Le domaine du SLAM recourt également beaucoup aux
+caméras, monoculaires ou binoculaires. 
+Très riches en informations, mécaniquement plus robuste que 
+le LIDAR et à relativement bas coût, elles sont également bien 
+plus difficiles à analyser.
+Les méthodes de SLAM visuelles sont particulièrement complexes 
+à mettre en oeuvre en extérieur et dans des environnements 
+très dynamiques ou pauvres en caractéristiques visuelles saillantes.
+De plus, les limitations liées au temps de calcul et à la latence 
+compliquent leur emploi dans des applications embarquées 
+typiques de la robotique.
+
+Néanmoins, des méthodes d'odométrie visuelle ont été développées depuis 
+2004 et sont directement dérivées des techniques de SLAM visuelles. 
+Leur but étant d'estimer l'odométrie de la camera se déplaçant dans
+le monde en ne se basant que sur l'exploitation des images.
+\cite{nister_visual_2004} est le premier article introduisant 
+ces méthodes. Ils n'utilisent aucune information proprioceptive.
+Uniquement les images de la camera (ou des caméras).
+Des caractéristiques visuelles sont repérées puis appairées dans les images
+successives afin d'en déduire la différence de pose de la caméra.
+Ces déplacements relatifs sont ensuite intégrés au cours du temps.
+L'article détaille également les nombreuses optimisations techniques nécessaires
+afin d'obtenir une fréquence de traitement acceptable de l'ordre de $13$~Hz
+pour une résolution de 720x240 mais non encore embarquable.
+
+Depuis, la recherche à perfectionner les techniques afin d'en réduire
+les temps de calculs et de les rendre plus robuste.
+Par exemple, \cite{weiss_monocular-slambased_2011} 
+estime l'odométrie visuelle à bord d'un petit hélicoptère télécommandé.
+La méthode SVO (\textit{Semi-direct Visual Odometry}) introduite par
+\cite{forster_svo:_2014} et ses développements sont en 2017 considérés 
+comme état de l'art et fonctionnent sur de petits quadrirotors volants.
+Plus généralement, la recherche sur l'odométrie visuelle s'est beaucoup
+orientée vers les applications concernant les voitures autonomes ainsi que 
+sur les drones afin d'en améliorer le contrôle en intérieur et en 
+complément (ou absence) du GPS.
+
+Appliquées aux robots humanoïdes, les méthodes d'odométrie visuelle
+font face à encore d'autres difficultés.
+Contrairement aux drones ou aux voitures, la caméra 
+(principalement fixé au niveau de la tête) des robots humanoïdes 
+est soumis pendant la marche à un important mouvement d'oscillation 
+latérale ainsi qu'à des chocs provoqués par l'atterrissage du pied en vol
+à chaque pas. 
+Ceci induit un flou des images capturées rendant délicat la détection 
+et l'appariement des caractéristiques visuelles.
+
+La première application de l'odométrie visuelle sur un robot humanoïde
+date de 2006 par \cite{stasse_real-time_2006} sur un grand robot HPR-2.
+Afin de répondre aux problématiques énumérées ci-dessus et d'améliorer la
+robustesse, les auteurs s'appuient en plus de la caméra sur le modèle de
+déplacement du robot.
+Plus en détail, le générateur de marche fournit une première
+estimation du déplacement espéré du robot qui est ensuite mélangée à l'odométrie
+visuelle au travers d'un filtre de Kalman étendu (le modèle 
+de déplacement étant non linéaire).
+L'information du déplacement prévu est utilisé afin d'aider l'analyse d'image
+à atteindre une vitesse de traitement en temps réel à bord du robot.
+
+Il est néanmoins nécessaire de noter que contrairement aux petits robots
+très imparfait dans leur mécanique et dans leur contrôle, la tête du robot HRP-2
+n'est pas soumis à des chocs très importants.
+Sur un petit robot humanoïde, \cite{pretto_visual_2009} proposent
+une nouvelle détection de caractéristiques visuelles plus robuste au flou
+typique de la marche des robots et améliore un algorithme classique
+d'odométrie visuelle.
+
+Sur un robot plus grand soumis à de forts chocs à cause de sa marche 
+utilisant les talons, \cite{ahn_-board_2012} réduisent grandement
+la dérive de l'odométrie en se basant en plus de la caméra sur le modèle 
+géométrique direct du robot.
+La lecture des capteurs proprioceptifs permet au travers du modèle
+du robot de calculer une estimation de son déplacement relatif à chaque pas.
+Un filtre de Kalman étendu est alors appliqué afin de mélanger
+l'estimation de l'odométrie proprioceptive et l'odométrie visuelle.
+L'intérêt est double. D'une part, l'odométrie visuelle corrige à 
+\og basse fréquence \fg l'estimation du déplacement à partir 
+d'informations externes.
+D'autre part, l'intégration des encodeurs des moteurs est
+calculé à \og haute fréquence \fg et complète l'état du robot entre
+deux prises d'images de la caméra.
+
+Enfin, les travaux de \cite{oriolo_humanoid_2016} aboutissent à une dérive
+de l'odométrie particulièrement faible sur le petit robot humanoïde NAO.
+Les auteurs annoncent une dérive de la position réelle du robot
+de l'ordre de seulement $10$~cm après $1.2$~m de déplacement.
+À noter néanmoins que l'analyse d'image est ici effectué de manière 
+déportée sur un ordinateur fixe plus puissant.
+Plus précisément, et comme précédemment, le modèle géométrique direct
+proprioceptif est couplé à l'odométrie visuelle à l'aide d'un filtre
+de Kalman étendu. 
+De plus, les auteurs tirent parti des capteurs de pression
+(capteurs FSR, \textit{Force Sensitive Resistor})
+sous les pieds du robot NAO pour améliorer l'estimation du déplacement 
+avec une meilleure détection du pied de support courant.
+L'article détaille l'intérêt de l'amélioration de la précision de l'odométrie 
+dans plusieurs expériences de localisation et d'asservissement de la navigation.
+Finalement, les auteurs insistent sur la difficulté de configuration
+des matrices de covariances du filtre de Kalman et sur les nécessaires 
+calibration et phase d'initialisation de la caméra.
+
+\subsection{Planification de trajectoires}
+
+Quand l'odométrie des robots leur permet de percevoir leurs
+déplacements et leur localisation, le modèle cinématique de 
+déplacement est un élément clef dans le contrôle et la planification
+de la trajectoire de navigation.
+La mise au point d'une politique de contrôle du déplacement du robot
+est discutée et réalisée à la section \ref{sec:odometry_cmaes}.
+Comme pour l'odométrie, ce sujet est depuis le début
+de la robotique mobile un domaine de recherche très étudié, 
+en premier lieu sur les robots à roues.
+Le modèle de déplacement théorique simple des robots à roues,
+le plus souvent exprimé sous forme matricielle linéaire
+(\cite{muir_kinematic_1987}) autorise de multiples formes
+de planifications, analytiques ou non.
+Les principaux biais affectant la modélisation du déplacement
+des robots à roues résident dans leurs défauts de montages mécaniques 
+mais surtout dans les glissements intervenant entre les roues et 
+le sol.
+
+Afin de prendre en compte ces effets dans le déplacement du robot,
+il est nécessaire de calibrer ou d'identifier un modèle de déplacement 
+capturant ces phénomènes.
+Le point important à noter est que ces modèles peuvent être
+construis à partir des mêmes données que celles utilisées pour
+l'apprentissage de l'odométrie.
+\cite{howard_model-predictive_2014} évoquent différents modèles
+de déplacements pour les robots à roues et synthétisent les multiples
+techniques de planifications de trajectoire utilisant ces modèles
+prédictifs.
+
+Par exemple toujours sur un robot à roues de type 
+\og rover martien \fg, \cite{howard_optimal_2007} proposent une
+méthode de planification de trajectoire optimale sur un terrain 
+très accidenté.
+Le chemin calculé par un algorithme d'optimisation itératif prend
+en compte les glissements des roues en les simulant au travers d'un modèle
+linéaire simple (l'identification du modèle n'est pas traité).
+Les auteurs insistent sur l'importance de tenir compte des glissements
+dans la commande en boucle ouverte (pré-compensation) car l'asservissement 
+réactif ne peut pas seul corriger la trajectoire.
+
+Chez les robots humanoïdes, le modèle de déplacement passe
+par la prédiction et la planification de la positions des pieds 
+ou pas au sol.
+Une des premières réalisation de planification de pas 
+date de 2005 par \cite{chestnutt_footstep_2005} sur le grand 
+robot humanoïde ASIMO.
+Il s'agit de planification de pas afin d'éviter des surfaces 
+interdites planaires. Le problème des glissements n'est pas abordé
+et les positions des pas prévus sont supposés exactes ; ce qui est
+généralement le cas sur de ce type de robots très précis.
+La planification des pas au long terme est très couteuse en temps
+de calcul. Les auteurs sont ainsi amener à faire de nombreuses approximations 
+et discrétisations des pas possibles afin de pouvoir employer 
+l'algorithme classique de recherche de chemin A*.
+
+Également sur un grand robot HRP-2, \cite{perrin_fast_2012} présentent
+une approche basée cette fois sur l'algorithme RTT pour la planification 
+rapide de pas évitant un ensemble d'obstacles 3D sur le sol.
+Une étude de la forme du volume des actions réalisables est conduite afin
+de pouvoir approximer cet espace et ainsi réduire et accélérer l'exploration
+de l'espace d'action.
+
+Dans un contexte RoboCup très proche du notre, \cite{schmitz_real-time_2012}
+planifient les pas d'un robot humanoïde de taille intermédiaire afin 
+d'approcher et d'orienter un des pieds du robot devant une balle dans
+une bonne position de tir.
+Les auteurs ne considèrent aucun obstacle mais prennent en compte la dynamique
+du robot en imposant des limites en vitesse et accélération.
+La planification utilise l'algorithme A* avec discrétisation des actions 
+en accélération. 
+Néanmoins, le temps de calcul étant prohibitif, une politique
+d'action n'encodant que le prochain pas est construite après une
+longue phase de pré-calcul.
+Plusieurs techniques de représentations de la politique sont alors 
+comparées. Elles permettent d'interroger en temps réel 
+sur le robot physique le résultat de la planification.
+
+Cette planification fait suite aux travaux \cite{schmitz_learning_2010} par
+les même auteurs. Ils mettent alors en place l'apprentissage d'un
+modèle linéaire du déplacement du robot en se basant sur un système de capture de mouvement.
+
+Enfin, \cite{hornung_search-based_2013} mettent en oeuvre et évaluent 
+la méthode R* (\textit{Randomized A*}) sur le robot humanoïde NAO
+et réussissent à obtenir une planification des pas en temps réel.
+La planification des pas permet l'évitement et l'enjambement d'obstacles 
+3D sur le sol.
+Pour cela, la méthode R* combine à la fois l'exploration par échantillonnage
+de l'algorithme RTT mais au lieu d'une exploration aléatoire, la recherche
+est guidée par la minimisation d'un coût de la même manière que l'algorithme A*. 
+La méthode ARA* (\textit{Anytime Repairing A*}) est également comparée. 
+Ces méthodes ont pour principale caractéristique de retourner une solution
+approchée (\textit{anytime}) du problème de planification même 
+lorsqu'elles sont interrompues au bout d'un temps arbitraire.\\
+
+Ainsi, les méthodes appliquées à la planification du déplacement du robot
+reposent sur deux grandes familles : 
+les variantes des algorithme A* et RTT (\textit{rapidly exploring random tree}).
+Ces deux types de méthodes présupposent que le déplacement du robot
+est déterministe. Aucun bruit n'est considéré.
+A contrario, \cite{ApproachICAPS2017} (voir section \ref{sec:odometry_cmaes}) proposent 
+l'utilisation du formalisme des processus de décisions Markovien (MDP)
+pour prendre en compte le bruit de déplacement, très présent sur nos robots.
+
+\section{Locomotion bipède\label{sec:biblio_walk}}
+
+Le sujet de la marche humanoïde
+est un domaine de recherche très particulier.
+D'une part, l'expérience quotidienne de la locomotion
+humaine rend ce sujet immédiatement compréhensible
+au grand public. 
+L'exemple des capacités motrices de l'humain, de sa réactivité et
+de son adaptabilité, rappellent tous les jours 
+l'ambition de l'objectif à atteindre.
+De plus, la marche des robots est intimement liée au rêve
+collectif du robot humanoïde anthropomorphe.
+
+À la fois, il est relativement facile de \og bricoler \fg
+un mouvement faisant faiblement bouger un robot humanoïde
+en glissant les pieds sur un sol parfaitement plat.
+Autant la démonstration d'un mouvement de marche en boucle fermée,
+rapide, robuste à la déstabilisation de perturbations extérieures
+et s'adaptant à différents terrains accidentés (sable, neige, montagne, ...) 
+reste aujourd'hui un problème ouvert\footnote{Il faut cependant saluer les avancées 
+exceptionnelles du robot humanoïde \textit{Atlas} de l'entreprise \textit{Boston Dybamics}, 
+et du robot bipède \textit{Cassie} de \textit{Agility Robotics} (successeur de \textit{ATRIAS}).}.
+Plus généralement, l'intelligence sensorimotrice des robots est encore loin 
+d'égaler celle observée chez les animaux.
+Il est toutefois important de noter que la motricité des robots est avant tout 
+contrainte par les capacités des actuateurs ; loin de posséder le ratio poids-puissance
+et l'efficacité énergétique de leurs équivalents biologiques.
+
+La littérature de ce sujet est particulièrement abondante et diverse.
+De nombreux domaines de recherche ont en effet abordé le problème
+et de nombreuses méthodes ont été expérimentées sur 
+la locomotion et de la stabilité bipède.
+Les quelques travaux mentionnés ci-dessous, classiques ou non,
+ont contribué à nourrir les réflexions de cette thèse.
+Plus précisément, j'ai mis au point et implémenté pour l'équipe Rhoban
+les générateurs de marche omnidirectionnels \textit{IKWalk} (voir section \ref{sec:walk})
+et \textit{QuinticWalk} (section \ref{sec:other_works}).
+Ces développements sur les petits robots humanoïdes de l'équipe
+ont été inspirés par les travaux suivants :\\
+
+Pour commencer, il faut citer \cite{vukobratovic_zero-moment_2004},
+proposant le concept classique du ZMP (\textit{Zero Moment Point}) 
+(voir section \ref{sec:zmp}).
+Cette notion de dynamique définie un critère suffisant mais non nécessaire 
+de stabilité pour la marche des robots à pieds plats, sur sols plats
+(depuis étendu aux sols non plats).
+
+Les travaux de Shuuji Kajita, \cite{kajita_3d_2001} et \cite{kajita_biped_2003},
+représentent la méthode \og traditionnelle \fg de marche 
+des robots humanoïdes.
+La dynamique du robot est modélisée par la linéarisation du pendule inversé simple
+(\textit{LIPM}, \textit{Linear Inverted Pendulum Model}).
+Toute la masse du robot est placée à hauteur constante au niveau de 
+son centre de masse (\textit{COM}) et attaché au sol à la position du
+pied de support par une tige sans masse (de taille variable).
+En choisissant arbitrairement la pose des pas du robot sur le sol,
+le problème revient à déterminer la trajectoire du COM afin que
+ses accélérations maintiennent le ZMP au niveau du pied de support.
+Grâce à la linéarisation, la dynamique du robot ainsi 
+que le critère du ZMP s'expriment sous forme matricielle linéaire
+et le problème est alors résolu en tant que problème d'asservissement.
+La méthode du précontrôle (\textit{preview control}) basée
+sur la théorie du régulateur linéaire quadratique 
+(\textit{LQR}, \textit{Linear Quadratic Regulator}) est appliquée.
+
+Sur un robot humanoïde de taille intermédiaire, 
+\cite{behnke_online_2006} propose un des premiers mouvements 
+de marche omnidirectionnelle.
+La spécificité de cette approche est qu'elle ne se base pas 
+sur le critère du ZMP ni sur aucune modélisation dynamique du robot.
+Elle n'est pas réactive (boucle ouverte) en dehors de l'asservissement en
+position des servomoteurs et ne demande qu'une puissance de calculs très réduite.
+Le mouvement d'oscillation géométrique du robot est directement paramétré 
+dans l'espace articulaire.
+La stabilité et les performances du mouvement reposent sur le réglage
+manuel des différents paramètres du mouvement.
+Le contrôle du mouvement omnidirectionnel se fait à l'aide 
+de trois paramètres : vitesse d'avance, latérale et de rotation.
+Cette approche est très populaire dans la communauté des robots de la
+ligue humanoïdes de la RoboCup par la simplicité des concepts mis en jeu.
+Le mouvement de marche \textit{IKWalk} utilisé sur nos robots suit
+une méthode similaire mais dans l'espace cartésien
+(voir la présentation du générateur à la section \ref{sec:walk}).
+
+Les différents travaux portés par Pierre-Brice Wieber, 
+\cite{wieber_trajectory_2006}, \cite{diedam_online_2008}
+sont fondés sur l'application du contrôle prédictif 
+(\textit{Model Predictive Control}, \textit{MPC}) à la locomotion bipède.
+L'idée repose sur d'une part, la prédiction des états 
+futures du système à partir d'une séquence d'actions possibles à horizon fini.
+Et d'autre part, à optimiser cette séquence d'actions afin que l'état futur 
+du système rejoigne au plus vite l'état désiré.
+À chaque itération de la boucle de contrôle du robot, 
+la séquence d'ordres futures optimale est optimisée et 
+seule la première action est appliquée.
+L'opération est alors continuellement répétée et doit
+donc être rapide en temps de calcul.
+C'est grâce à la linéarisation du modèle du pendule inversé
+que le comportement du robot se formalise comme un système dynamique linéaire.
+Le contrôle du ZMP peut ainsi se réduire à la résolution d'un problème 
+d'optimisation quadratique (optimisation sous contraintes).
+La difficulté consiste en effet en la gestion des différentes
+contraintes (inégalités), par exemple les limites d'accessibilité 
+imposées par le modèle géométrique inverse.
+Le deuxième article traite de l'utilisation du positionnement 
+des pieds comme dimensions d'actions supplémentaires
+pour conserver l'équilibre bipède.
+Cependant, ces travaux se reposent fortement sur une modélisation
+et un contrôle précis du robot.
+Ces méthodes sont en pratique difficilement applicables à nos robots imparfaits.
+
+\cite{graf_closed-loop_2010} et \cite{graf_center_2011} adaptent les travaux 
+de Kajita sur le petit robot humanoïde NAO.
+Une marche omnidirectionnelle sans phase de double support est proposée.
+Le mouvement est ici réactif à la trajectoire réelle du centre de masse.
+La pose du buste est estimée au travers des capteurs (encodeurs de positions et IMU)
+et du modèle géométrique direct.
+De plus, des filtres de Kalman sont utilisés pour filtrer la position mais 
+aussi la vitesse du centre de masse du robot.
+Grâce aux filtres, l'état du pendule inverse à tout moment est reconstruit ; 
+le filtrage permet de résoudre le problème de différentiation numérique 
+de la position mesurée bruitée du buste.
+Quand une perturbation de la trajectoire du COM est détectée, une nouvelle
+trajectoire du COM est générée et les pas futurs du robot sont modifiés.
+Enfin, la latence entre l'écriture des ordres moteurs et les lectures
+des encodeurs est également gérée au travers du filtre.
+
+Les travaux de Marcell Missura, \cite{missura_lateral_2011}, \cite{missura_omnidirectional_2013},
+\cite{missura_learning_2014} et \cite{missura_analytic_2016} présentent une méthode
+appelée \og pas de capture \fg \textit{capture step framework} pour la stabilisation
+réactive de la marche bipède sur un robot humanoïde de taille intermédiaire.
+Cette technique est l'extension du \og point de capture \fg 
+(\textit{capture point}) par \cite{pratt_capture_2006}.
+Il s'agit d'un point sur le sol tel que le robot peut placer son ZMP sur ce point
+pour stopper son mouvement en un pas.
+En développant cette approche, l'auteur propose une méthode contrôlant
+la trajectoire du centre de masse en agissant en permanence sur 
+la position et la durée des pas du robot.
+Le mouvement de marche est en grande partie impulsé par des oscillations 
+en boucle ouverte.
+La détection des perturbations de la trajectoire du COM
+passe par le calcul de l'énergie orbitale du pendule, sensée être constante.
+Les équations en formes closes de la trajectoire du COM permettent de prédire
+ses futures positions théoriques.
+Ces équations sont utilisées pour calculer le moment et la position du prochain
+pas pour ramener la trajectoire du COM à une trajectoire nominale.
+Cette méthode est de plus peu couteuse en temps de calcul.
+Le bruit de l'IMU est pris en compte et les pas du robot ne sont pas
+modifiés lorsque l'incertitude sur la vitesse de COM est trop importante.
+Enfin, la dernière étude de l'auteur étend la méthode du pas de capture par l'ajout
+d'une étape d'apprentissage.
+L'intérêt de cette approche est qu'elle constitue un exemple
+de mouvement de marche réactive s'appliquant avec succès sur 
+des robots de taille intermédiaire et imparfaits, très similaires à nos propres robots.
+
+Sur un robot NAO simulé, \cite{hugel_walking_2012} proposent également
+une marche se basant sur le modèle linéaire du pendule inversé
+et le critère ZMP.
+Plus spécifiquement, les auteurs font état dans cet article de la phase 
+de démarrage de la marche ainsi que du recollement de la trajectoire 
+du centre de masse entre deux primitives motrices.
+Une approche ressemblante est employée au sein du nouveau mouvement de
+marche en boucle ouverte, la \textit{QuinticWalk} développée en 
+2017 et mentionnée à la section \ref{sec:other_works}.
+
+Pour finir toujours sur le robot NAO, une approche très intéressante est
+développée par \cite{seekircher_closed-loop_2016} en se basant
+également sur une marche par pendule inversé et ZMP. 
+Tout d'abord, leur modèle de pendule inverse est augmenté 
+de termes de compensations et de décalages afin de prendre en compte
+les imperfections systématiques des robots.
+Ensuite, pendant son fonctionnement, la dynamique du robot
+est continuellement observée. 
+Un algorithme d'optimisation en boite noire (CMA-ES),
+optimise les paramètres du modèle du pendule afin d'améliorer 
+la prédiction du comportement récent du robot.
+L'ajustement des paramètres est ainsi recommencé à intervalles réguliers
+au cours du fonctionnement du robot.
+Étant donné que le contrôle de la marche est basé sur ce modèle, 
+la stabilité du mouvement s'en trouve améliorée et s'adapte 
+en quelques minutes à une nouvelle surface du sol (herbe artificielle, moquette).
+
+\section{Synthèse, optimisation et simulation de mouvements\label{sec:biblio_motion}}
+
+Ci-dessous, quelques travaux en relation avec la synthèse de mouvements 
+(voir section \ref{sec:motion_generation}) sont présentés.
+Tout d'abord concernant la mise au point d'un mouvement de tir notamment 
+sur des grands robots \og précis \fg et sur petits robots imparfaits. 
+Puis quelques travaux s'étant intéressés au problème du transfert de mouvements du simulateur
+à la réalité sont mentionnés.\\
+
+Sur le petit robot quadrupède AIBO, \cite{hausknecht_learning_2011}
+mettent en place une installation expérimentale permettant de répéter
+un très grand nombre de fois un mouvement de tir sur le robot réel.
+En évaluant la distance de tir sur le robot, un algorithme d'optimisation 
+par descente de gradient optimise les $10$ paramètres d'un mouvement
+représenté par des splines polynomiales.\\
+
+Sur le grand robot HRP-2, \cite{miossec_development_2006} proposent 
+l'un des tout premiers travaux sur la génération d'un mouvement de tir
+(en simple support).
+Pour commencer, une phase d'identification des paramètres inertiels
+du robot améliore la qualité de la modélisation dynamique.
+Ensuite, un algorithme d'optimisation par descente de gradient non linéaire
+est utilisé pour minimiser, sous contraintes, la somme des couples
+d'un mouvement de tir représenté par des B-splines.
+Ces contraintes incluent entre autre la position du ZMP.
+Le problème du double support support n'est pas traité.
+
+Sur le robot HRP-2 (\cite{lengagne_generation_2010}), puis
+sur le petit robot humanoïde HOAP-3 (\cite{lengagne_planning_2011}), 
+les auteurs proposent un perfectionnement de la technique de génération 
+de mouvements par optimisation de la dynamique inverse. 
+Ils réduisent entre autres les temps de calculs et améliorent la gestion
+du respect des contraintes.
+
+\cite{xu_adaptive_2010} découplent sur le robot NAO le mouvement 
+de tir du problème de la stabilisation.
+Au niveau de la jambe de tir, un mouvement est déterminé géométriquement
+pour frapper la balle à une position et dans une direction données.
+Le problème de la stabilité est géré au niveau de la jambe de support par
+un contrôle proportionnel sur le centre de masse.
+La trajectoire du pied en vol est représentée par des splines de Bézier
+et découpée de manière experte en différentes \og phases \fg.
+La zone de stabilité du tir est alors étudiée.
+Le problème de cette approche est que le mouvement prévu de la jambe
+de tir n'est pas utilisé dans la stabilisation purement réactive.
+Une approche très semblable est suivit par \cite{ferreira_development_2012}
+sur le robot NAO en pure simulation pour la mise au point d'un tir omnidirectionnel.
+
+Une approche originale est expérimentée sur le petit robot humanoïde
+DARwIn-OP par \cite{yi_improved_2013}. Le problème du tir est relié à celui
+de la marche. La même théorie du pendule inverse linéaire et du contrôle
+du ZMP (\textit{preview control}) est appliquée à la stabilisation du tir. 
+Le problème de l'enchainement de la marche et du tir est en particulier traité.
+
+En simulation avec le robot NAO, \cite{jouandeau_optimization_2014} proposent
+la paramétrisation d'un mouvement de tir puis l'optimisent
+afin d'en maximiser la portée. 
+Une méthode d'optimisation sans gradient est utilisée.
+Une des spécificités de ces travaux est la
+proposition d'utiliser la rotation du torse du robot pour accompagner 
+la jambe de tir et maximiser la puissance.
+Le problème de la stabilisation n'est pas considéré.
+
+Sur le robot NAO réel, \cite{wenk_online_2014} se basent également
+sur le modèle du pendule inversé linéaire pour stabiliser le mouvement tir.
+Grâce à la proposition d'une méthode d'estimation du ZMP avec un filtre de Kalman,
+ce dernier est asservit sous le pied de support du robot.
+Deux méthodes de contrôle sont alors comparées.
+Toutefois, comme la trajectoire du pied en vol est complètement décorrélée du problème
+de stabilisation, l'information de sa trajectoire (connue à l'avance) n'est pas utilisée.
+Le mouvement de la jambe de tir est ainsi perçu comme une perturbation extérieure
+et il n'y a donc pas de possibilité de pré-compensation.
+
+Toujours dans le contexte de la ligue humanoïde standard NAO de la RoboCup, 
+\cite{bockmann_kick_2016} utilisent des DMP (\textit{Dynamic Movement Primitives})
+pour apprendre (par démonstration) la forme du meilleur mouvement de tir connu.
+Grâce aux propriétés des DMP, ce tir initialement non paramétrable est étendu 
+à différentes positions possibles de la balle.
+La stabilisation est assurée par un asservissement du ZMP (\textit{preview control}).\\
+
+Sur un bras robotique, \cite{christiano_transfer_2016} corrigent les différences 
+de prédiction entre la simulation et le comportement réel du robot par 
+l'apprentissage d'un modèle dynamique inverse.
+
+\cite{boeing_dynamic_2016} travaillent sur un tout petit robot humanoïde 
+fabriqué avec des servomoteurs analogiques et incluant des pièces mécaniques flexibles. 
+Leur but est d'optimiser le mouvement de marche du robot en simulation, en se basant
+sur un algorithme génétique sans gradient.
+Un modèle des servomoteurs est présenté afin de capturer au mieux la dynamique 
+réelle du robot.
+Le simulateur ouvert \textit{DynaMechs} est employé.
+
+Les travaux de \cite{farchy_humanoid_2013} et \cite{hanna_grounded_2017}
+sont les plus proches de ce que nous aimerions réaliser avec Sigmaban.
+L'objectif des auteurs est d'améliorer la vitesse de marche d'un robot NAO.
+Pour ce faire, les paramètres du mouvement sont optimisés sur un 
+simulateur standard (SimSpark, ODE) avec l'algorithme sans gradient CMA-ES. 
+Pour compenser les déviations existantes entre les prédictions du simulateur et le
+comportement réel du robot, différentes méthodes de régression sont comparées 
+dans le premier article. Dans le second article, des réseaux de neurones profonds 
+sont employés.
+Après plusieurs itérations d'optimisations dans le simulateur puis d'expérimentations sur
+le robot réel et re-apprentissage de la correction du simulateur, la vitesse de marche
+du robot est significativement augmentée.\\
+
+On peut également mentionner ici les travaux très originaux 
+de \cite{degrave_differentiable_nodate}.
+Les auteurs développent (au prix de quelques simplifications et omissions) 
+une simulation dynamique entièrement différentiable.
+Sur un tel simulateur, l'optimisation d'un mouvement contrôlé par un réseau 
+de neurones profond est rendue possible avec une adaptation de l'algorithme de 
+rétropropagation du gradient.
+Par rapport à l'utilisation d'un algorithme d'optimisation sans gradient, 
+un gain très important de performances est alors théoriquement possible.\\
+

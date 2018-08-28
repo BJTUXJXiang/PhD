@@ -1,0 +1,14 @@
+**.swp
+build/*.aux 
+build/*.pdf 
+build/*.glo 
+build/*.gls 
+build/*.bbl 
+build/*.log 
+build/*.blg 
+build/*.dvi 
+build/*.out
+build/*.toc
+build/*.nav
+build/*.snm
+

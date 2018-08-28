@@ -1,0 +1,73 @@
+
+\subsection{Contributions}
+
+\begin{frame}{Résumé des contributions}
+    \begin{columns}
+        \begin{column}{0.55\linewidth}
+            \begin{itemize}
+                \item \textbf{Correction de l'odométrie} :
+                    \begin{itemize}
+                        \item Régression non paramétrique + mesure externe
+                        \item Modèle linéaire + optimisation boite noire
+                        \item Comparaison proprioception et prédiction
+                        \item Comparaison surfaces et stabilisation
+                    \end{itemize}
+                \item \textbf{Correction du modèle de caméra}
+                \item \textbf{Synthèse de mouvements} (en cours) :
+                    \begin{itemize}
+                        \item Tirs
+                        \item Génération par optimisation
+                        \item Simulateur physique
+                    \end{itemize}
+                \item \textbf{Contributions logicielles} :
+                    \begin{itemize}
+                        \item Ingénierie logicielle ($\approx80000$ lignes)
+                        \item Générateurs de marche
+                        \item Utilisé par la communauté
+                    \end{itemize}
+            \end{itemize}
+        \end{column}
+        \begin{column}{0.45\linewidth}
+            \centering
+            \movie[
+                autostart,
+                width=\linewidth, 
+                height=0.76\linewidth,
+                poster,
+                loop
+            ]{}{../video/modelKick.ogv}
+            \movie[
+                autostart,
+                width=\linewidth, 
+                height=0.56\linewidth,
+                poster,
+                loop
+            ]{}{../video/cutKick_light.mp4}
+        \end{column}
+    \end{columns}
+\end{frame}
+
+\subsection{Perspectives}
+
+\begin{frame}{Perspectives -- Odométrie}
+    \begin{itemize}
+        \setlength\itemsep{1.0em}
+        \item Expérimentation de l'odométrie visuelle
+            \begin{itemize}
+                \item \customtextcolor{(Oriolo et al., 2016)} mais embarqué
+                \item Comparaison sur la même plateforme
+                \item Correction proprioception + odométrie visuelle
+            \end{itemize}
+        \item Modélisation du bruit
+            \begin{itemize}
+                \item Bruit du déplacement, bruit expérimental
+                \item $\Rightarrow$ Maximisation de la vraissamblance
+                \item Travaux en cours (\textit{German Open 2017})
+            \end{itemize}
+        \item Générateur de marche \textit{QuinticWalk}
+            \begin{itemize}
+                \item Nouvelle marche 2017 plus stable
+                \item Moins de bruit
+            \end{itemize}
+    \end{itemize}
+\end{frame}

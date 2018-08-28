@@ -1,0 +1,128 @@
+#!/bin/bash
+
+scripts='
+pressure_sensors.plot
+odometry_pressure_comparison.plot
+walk_splines.plot
+walk_traj_foot.plot
+walk_time_foot.plot
+walk_traj_trunk.plot
+walk_traj_com.plot
+walk_quintic_zmp.plot
+walk_stabilization1.plot
+walk_stabilization2.plot
+OdometryLWPR/carpet_close_learn_log_complete_traj.plot
+OdometryLWPR/carpet_open_learn_log_complete_traj.plot
+OdometryLWPR/grass_close_learn_log_complete_traj.plot
+OdometryLWPR/grass_open_learn_log_complete_traj.plot
+OdometryLWPR/carpet_close_learn_log_walk_orders.plot
+OdometryLWPR/carpet_open_learn_log_walk_orders.plot
+OdometryLWPR/grass_close_learn_log_walk_orders.plot
+OdometryLWPR/grass_open_learn_log_walk_orders.plot
+OdometryLWPR/grass_open_convergence_x.plot
+OdometryLWPR/grass_close_convergence_x.plot
+OdometryLWPR/carpet_open_convergence_x.plot
+OdometryLWPR/carpet_close_convergence_x.plot
+OdometryLWPR/grass_open_convergence_y.plot
+OdometryLWPR/grass_close_convergence_y.plot
+OdometryLWPR/carpet_open_convergence_y.plot
+OdometryLWPR/carpet_close_convergence_y.plot
+OdometryLWPR/grass_open_convergence_yaw.plot
+OdometryLWPR/grass_close_convergence_yaw.plot
+OdometryLWPR/carpet_open_convergence_yaw.plot
+OdometryLWPR/carpet_close_convergence_yaw.plot
+OdometryLWPR/grass_open_compare_cart.plot
+OdometryLWPR/grass_close_compare_cart.plot
+OdometryLWPR/carpet_open_compare_cart.plot
+OdometryLWPR/carpet_close_compare_cart.plot
+OdometryLWPR/grass_open_compare_angle.plot
+OdometryLWPR/grass_close_compare_angle.plot
+OdometryLWPR/carpet_open_compare_angle.plot
+OdometryLWPR/carpet_close_compare_angle.plot
+OdometryLWPR/grass_open_delay_imu_uncorrected.plot
+OdometryLWPR/grass_open_delay_imu_corrected.plot
+OdometryLWPR/grass_open_why_goal_lateral_diff.plot
+OdometryLWPR/grass_close_function_read_x_x.plot
+OdometryLWPR/grass_close_function_read_y_x.plot
+OdometryLWPR/grass_close_function_read_yaw_x.plot
+OdometryLWPR/grass_close_function_read_len_x.plot
+OdometryLWPR/grass_close_function_read_x_y.plot
+OdometryLWPR/grass_close_function_read_y_y.plot
+OdometryLWPR/grass_close_function_read_yaw_y.plot
+OdometryLWPR/grass_close_function_read_len_y.plot
+OdometryLWPR/grass_close_function_read_x_yaw.plot
+OdometryLWPR/grass_close_function_read_y_yaw.plot
+OdometryLWPR/grass_close_function_read_yaw_yaw.plot
+OdometryLWPR/grass_close_function_read_len_yaw.plot
+OdometryLWPR/grass_close_function_goal_x_x.plot
+OdometryLWPR/grass_close_function_goal_y_x.plot
+OdometryLWPR/grass_close_function_goal_yaw_x.plot
+OdometryLWPR/grass_close_function_goal_x_y.plot
+OdometryLWPR/grass_close_function_goal_y_y.plot
+OdometryLWPR/grass_close_function_goal_yaw_y.plot
+OdometryLWPR/grass_close_function_goal_x_yaw.plot
+OdometryLWPR/grass_close_function_goal_y_yaw.plot
+OdometryLWPR/grass_close_function_goal_yaw_yaw.plot
+OdometryLWPR/grass_open_traj1_diff_x.plot
+OdometryLWPR/grass_open_traj1_diff_y.plot
+OdometryLWPR/grass_open_traj1_diff_yaw.plot
+OdometryLWPR/grass_open_traj1_pose.plot
+OdometryLWPR/grass_open_traj2_pose.plot
+OdometryLWPR/grass_open_traj3_pose.plot
+OdometryLWPR/grass_open_traj4_pose.plot
+OdometryLWPR/grass_open_traj5_pose.plot
+OdometryLWPR/grass_open_traj6_pose.plot
+OdometryLWPR/comparison_values.plot
+OdometryCMAES/convergenceOrders.plot
+OdometryCMAES/convergenceReads.plot
+OdometryCMAES/walk_orders.plot
+OdometryCMAES/parametersPropOrders.plot
+OdometryCMAES/parametersSimpleOrders.plot
+OdometryCMAES/parametersFullOrders.plot
+OdometryCMAES/parametersPropReads.plot
+OdometryCMAES/parametersSimpleReads.plot
+OdometryCMAES/parametersFullReads.plot
+OdometryCMAES/ordersTraj1.plot
+OdometryCMAES/ordersTraj2.plot
+OdometryCMAES/ordersTraj3.plot
+OdometryCMAES/ordersTraj4.plot
+OdometryCMAES/ordersTraj5.plot
+OdometryCMAES/ordersTraj6.plot
+OdometryCMAES/ordersTraj7.plot
+OdometryCMAES/ordersTraj8.plot
+OdometryCMAES/ordersTraj9.plot
+OdometryCMAES/readsTraj1.plot
+OdometryCMAES/readsTraj2.plot
+OdometryCMAES/readsTraj3.plot
+OdometryCMAES/readsTraj4.plot
+OdometryCMAES/readsTraj5.plot
+OdometryCMAES/readsTraj6.plot
+OdometryCMAES/readsTraj7.plot
+OdometryCMAES/readsTraj8.plot
+OdometryCMAES/readsTraj9.plot
+OdometryCMAES/robotTrajs.plot
+motors_control.plot
+motors_voltage.plot
+friction_model.plot
+quintic_runge.plot
+kickgreg_vel.plot
+'
+
+php OdometryCMAES/processStats.php ../data/OdometryCMAES/computedOrdersCalibration.csv OdometryCMAES/orders
+php OdometryCMAES/processStats.php ../data/OdometryCMAES/computedReadsCalibration.csv OdometryCMAES/reads
+
+php OdometryCMAES/processTrajs.php ../data/OdometryCMAES/HA_RFPI.csv > OdometryCMAES/HA_RFPI.data
+php OdometryCMAES/processTrajs.php ../data/OdometryCMAES/HA_CMA-ES.csv > OdometryCMAES/HA_CMA-ES.data
+php OdometryCMAES/processTrajs.php ../data/OdometryCMAES/HA_Winner2016.csv > OdometryCMAES/HA_Winner2016.data
+php OdometryCMAES/processTrajs.php ../data/OdometryCMAES/ANHA_RFPI.csv > OdometryCMAES/ANHA_RFPI.data
+php OdometryCMAES/processTrajs.php ../data/OdometryCMAES/ANHA_CMA-ES.csv > OdometryCMAES/ANHA_CMA-ES.data
+php OdometryCMAES/processTrajs.php ../data/OdometryCMAES/ANHA_Winner2016.csv > OdometryCMAES/ANHA_Winner2016.data
+
+for f in $scripts; do
+    p=`echo $f | cut -d "." -f 1`;
+    p="$p.pdf";
+    gnuplot $f;
+    pdfcrop $p $p > /dev/null;
+    echo $p;
+done;
+

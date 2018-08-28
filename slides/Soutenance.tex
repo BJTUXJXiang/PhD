@@ -1,0 +1,162 @@
+\documentclass[10pt]{beamer}
+
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[frenchb]{babel}
+\usepackage{amssymb}
+\usepackage{amsmath}
+\usepackage{bm}
+\usepackage{tikz}
+\usepackage{mathrsfs}
+\usepackage{graphicx}
+\usepackage{verbatim}
+\usepackage{multimedia}
+
+\title[Correction défauts robots humanoïdes]{
+Apprentissage et correction des imperfections 
+des robots humanoïdes de petite taille :\\
+application à l'odométrie et à la synthèse de mouvements
+}
+\author[Quentin Rouxel]{
+Quentin Rouxel\\
+\vspace{0.1cm}
+\small
+Directeurs : Olivier Ly et Hugo Gimbert
+}
+\institute[Rhoban]{Équipe Rhoban - LaBRI - Université de Bordeaux}
+\date[4 décembre 2017 (Thèse)]{Soutenance de thèse -- 4 décembre 2017}
+
+%Beamer theme
+\usetheme{Madrid}
+%\usetheme{AnnArbor}
+\usecolortheme{beaver}
+\useinnertheme{circles}
+\setbeamertemplate{blocks}[default]
+\setbeamertemplate{blocks}[rounded][shadow=false]
+%\setbeamertemplate{caption}[numbered]
+%\setbeameroption{show notes}
+%\setbeamercovered{transparent}
+
+%Custom colors
+\definecolor{UBXBleu}{RGB}{0,157,224}
+\definecolor{UBXBleuLight}{RGB}{222,237,252}
+\definecolor{UBXMarron}{RGB}{68,58,49}
+\definecolor{UBXGris}{RGB}{232,232,232}
+\setbeamercolor*{structure}{bg=white,fg=UBXBleu}
+\setbeamercolor*{palette primary}{use=structure,fg=UBXMarron,bg=UBXGris}
+\setbeamercolor*{palette secondary}{use=structure,fg=UBXMarron,bg=UBXBleuLight}
+\setbeamercolor*{palette tertiary}{use=structure,fg=white,bg=UBXBleu}
+\setbeamercolor{titlelike}{fg=white,bg=UBXBleu}
+\setbeamercolor{frametitle}{bg=UBXGris,fg=UBXMarron}
+\setbeamercolor{block title}{bg=UBXBleu,fg=white}
+\setbeamercolor{block body}{bg=UBXBleuLight,fg=black}
+
+%\setbeamercolor{frametitle}{bg=UBXBleu,fg=white}
+%\setbeamercolor{block title}{bg=UBXGris,fg=UBXMarron}
+
+%Disable presentation navigation buttons
+\beamertemplatenavigationsymbolsempty
+
+%Commande custom pour l'affochage des références
+\newcommand{\customtextcolor}[1]{\usebeamercolor[fg]{structure}{#1}\usebeamercolor[fg]{normal text}}
+
+% Macro pour la transposée
+\newcommand\T{\mathsf{T}}
+
+\begin{document}
+
+\begin{frame}{}
+    \begin{columns}
+        \begin{column}{0.22\textwidth}
+            \includegraphics[width=0.7\linewidth]{../media/rhoban_logo.png}
+        \end{column}
+        \begin{column}{0.22\textwidth}
+            \includegraphics[width=\linewidth]{../media/logo_labri.jpg}
+        \end{column}
+        \begin{column}{0.22\textwidth}
+            \includegraphics[width=\linewidth]{../template/logo_ubx.jpg}
+        \end{column}
+        \begin{column}{0.22\textwidth}
+            \includegraphics[width=\linewidth]{../media/logo_inp.jpg}
+        \end{column}
+    \end{columns}
+    \titlepage
+\end{frame}
+
+\section{Introduction}
+
+\begin{frame}{Plan}
+    \tableofcontents[ 
+        sectionstyle=show, 
+        subsectionstyle=show, 
+        currentsubsection, 
+        hideothersubsections, 
+    ] 
+\end{frame}
+
+\input{../slides/robocup}
+\input{../slides/robot}
+\input{../slides/introduction}
+
+\section{Définitions et notions}
+
+\begin{frame}{Définitions et notions}
+    \tableofcontents[ 
+        sectionstyle=show/shaded, 
+        subsectionstyle=show/shaded, 
+        currentsubsection, 
+        hideothersubsections, 
+    ] 
+\end{frame}
+
+\input{../slides/odometry_intro}
+\input{../slides/biblio}
+%\input{../slides/walk}
+\input{../slides/proprioception}
+\input{../slides/support}
+
+\section{Correction de l'odométrie : régression et mesure externe}
+
+\begin{frame}{Correction de l'odométrie}
+    \tableofcontents[ 
+        sectionstyle=show/shaded, 
+        subsectionstyle=show/shaded, 
+        currentsubsection, 
+        hideothersubsections, 
+    ] 
+\end{frame}
+
+\input{../slides/odometry_lwpr}
+
+\section{Correction de l'odométrie : modèle linéaire et idendification}
+
+\begin{frame}{Correction de l'odométrie}
+    \tableofcontents[ 
+        sectionstyle=show/shaded, 
+        subsectionstyle=show/shaded, 
+        currentsubsection, 
+        hideothersubsections, 
+    ] 
+\end{frame}
+
+\input{../slides/odometry_cmaes}
+
+\section{Conclusion}
+
+\begin{frame}{Conclusion}
+    \tableofcontents[ 
+        sectionstyle=show/shaded, 
+        subsectionstyle=show/shaded, 
+        currentsubsection, 
+        hideothersubsections, 
+    ] 
+\end{frame}
+
+\input{../slides/perspectives}
+\input{../slides/publications}
+\input{../slides/last}
+
+\input{../slides/backup}
+
+\end{document}
+
